@@ -157,3 +157,7 @@
 (package! org-web-tools)
 (package! pyenv-mode)
 (package! dired-git-info)
+(package! ejc-sql)
+(package! flx-ido)
+(package! company-quickhelp)
+(package! ob-async)
