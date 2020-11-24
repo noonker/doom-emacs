@@ -161,3 +161,4 @@
 (package! flx-ido)
 (package! company-quickhelp)
 (package! ob-async)
+(package! somafm)

@@ -388,6 +388,50 @@
   (interactive "sHost: ")
   (async-shell-command (format "ssh -D 1337 -C -q -N %s" text) (format "*proxy: %s*" text)))
 #+end_src
+** EJC / SQL / Athena
+#+begin_src emacs-lisp
+(require 'ejc-sql)
+(setq clomacs-httpd-default-port 8090)
+(require 'ejc-autocomplete)
+(add-hook 'ejc-sql-minor-mode-hook
+          (lambda ()
+            (auto-complete-mode t)
+            (ejc-ac-setup)))
+(setq ejc-use-flx t)
+(setq ejc-flx-threshold 2)
+(require 'ejc-company)
+(push 'ejc-company-backend company-backends)
+(add-hook 'ejc-sql-minor-mode-hook
+          (lambda ()
+            (company-mode t)))
+(company-quickhelp-mode)
+(add-hook 'ejc-sql-minor-mode-hook
+          (lambda ()
+            (ejc-eldoc-setup)))
+(add-hook 'ejc-sql-connected-hook
+          (lambda ()
+            (ejc-set-fetch-size 50)
+            (ejc-set-max-rows 50)
+            (ejc-set-show-too-many-rows-message t)
+            (ejc-set-column-width-limit 25)))
+
+
+    ;; setup with use-package
+(use-package ejc-sql
+  :commands
+  (ejc-create-connection ejc-connect ejc-set-column-width-limit)
+  :init
+  (setq ejc-set-rows-limit 1000
+        ejc-result-table-impl 'orgtbl-mode ;; 'ejc-result-mode
+        ejc-use-flx t
+        ejc-flx-threshold 3
+        nrepl-sync-request-timeout 30)
+  ;; enable auto complete
+  (add-hook 'ejc-sql-minor-mode-hook
+            (lambda ()
+              (auto-complete-mode t)
+              (ejc-ac-setup))))
+#+end_src
 ** Term / Fish / CLI
 #+begin_src  emacs-lisp
 (when (and (executable-find "fish")
