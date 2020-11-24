@@ -161,3 +161,6 @@
 (package! flx-ido)
 (package! company-quickhelp)
 (package! ob-async)
+(package! rfc-mode)
+(package! kubel)
+(package! kubernetes-helm)

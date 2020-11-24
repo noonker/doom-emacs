@@ -458,6 +458,7 @@
 ** IRC / ERC
 #+begin_src emacs-lisp
 (erc-colorize-mode 1)
+;; (setq gnutls-verify-error nil)
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 #+end_src
 
@@ -629,6 +630,14 @@ information."))))
 	   smtpmail-text-buffer))
 
 (setq mail-user-agent 'gnus-user-agent)
+
+(setq message-send-mail-function 'smtpmail-send-it
+    smtpmail-auth-credentials "~/.authinfo"
+    smtpmail-smtp-server "127.0.0.1"
+    smtpmail-smtp-service 1025)
+
+;; (add-to-list 'gnutls-trustfiles (expand-file-name "~/.config/protonmail/bridge/cert.pem"))
+
 
 (defun todo (text &optional body)
   (interactive "sTodo: ")
@@ -1229,9 +1238,14 @@ information."))))
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 #+end_src
 
+** RFC Mode
+#+begin_src emacs-lisp
+(require 'rfc-mode)
+(setq rfc-mode-directory (expand-file-name "~/Documents/rfc/"))
+#+end_src
 ** Load Other Files
 #+begin_src emacs-lisp
-(load "~/Documents/infodoc-theme.el")
-(load "~/git/keybase-chat/keybase-markup.el")
-(load "~/git/keybase-chat/keybase-chat.el")
+;;(load "~/Documents/infodoc-theme.el")
+;;(load "~/git/keybase-chat/keybase-markup.el")
+;;(load "~/git/keybase-chat/keybase-chat.el")
 #+end_src
