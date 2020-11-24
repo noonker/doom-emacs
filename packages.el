@@ -162,3 +162,6 @@
 (package! company-quickhelp)
 (package! ob-async)
 (package! somafm)
+(package! rfc-mode)
+(package! kubel)
+(package! kubernetes-helm)
