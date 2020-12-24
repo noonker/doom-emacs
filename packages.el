@@ -165,3 +165,7 @@
 (package! rfc-mode)
 (package! kubel)
 (package! kubernetes-helm)
+(package! org-chef)
+(package! counsel-jq)
+(package! nhexl-mode)
+(package! org-roam-server)
