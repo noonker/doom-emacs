@@ -1311,6 +1311,19 @@ information."))))
 ;;; Modes
 (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+
+(eval-after-load "lispy"
+  `(progn
+     ;; replace a global binding with own function
+     ;;(define-key lispy-mode-map (kbd "C-e") 'my-custom-eol)
+     ;; replace a global binding with major-mode's default
+     (define-key lispy-mode-map (kbd "C-2") 'helm-mini)
+     (define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
+     ;; replace a local binding
+    ;; (lispy-define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
+     ))
+
 #+end_src
 
 ** RFC Mode
