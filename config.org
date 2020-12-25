@@ -884,7 +884,6 @@ it can be passed in POS."
 
 (setq org-archive-file-header-format nil)
 
-
 (defun  org-init-agenda ()
   (interactive)
   (let ((initial '(("backlog.org" nil)
@@ -969,6 +968,8 @@ it can be passed in POS."
 (setq org-capture-templates
       '(("b" "Backlog" entry (file+headline (lambda () (format "%s/backlog.org" org-agenda-basedir)) "Backlog")
          "** TODO %?\n  %i\n  %a")
+        ("i" "Investigations" entry (file+headline (lambda () (format "%s/investigations/index.org" org-directory)) "Investigations")
+         "** %<%Y-%m-%d>-%?\n")
         ("t" "Today" entry (file+headline (lambda () (format "%s/today.org" org-agenda-basedir)) "Tasks")
          "** TODO %?\n SCHEDULED: %t")
 	       ("n" "Now" entry (file+headline (lambda () (format "%s/today.org" org-agenda-basedir)) "Tasks")
@@ -993,6 +994,11 @@ it can be passed in POS."
         ("i" "investigations" plain (function org-roam--capture-get-point)
          "%?"
          :file-name "investigations/%<%Y%m%d%H%M%S>-${slug}"
+         :head "#+title: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+         :unnarrowed t)
+        ("n" "new investigation" plain (function org-roam--capture-get-point)
+         "%?"
+         :file-name "investigations/${slug}"
          :head "#+title: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
          :unnarrowed t)
                                    ))
