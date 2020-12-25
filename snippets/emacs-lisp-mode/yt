@@ -1,0 +1,5 @@
+# key: yt
+# name: yt
+# --
+("https://www.youtube.com/feeds/videos.xml?channel_id=$1" youtube) ;; $2
+$0

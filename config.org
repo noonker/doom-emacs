@@ -143,6 +143,7 @@
 #+begin_src emacs-lisp
 (setq file-name-handler-alist (cons epa-file-handler nil))
 (defalias 'epa--decode-coding-string 'decode-coding-string)
+(setq epa-file-encrypt-to "noonker@gmail.com")
 (setq projectile-current-project-on-switch 'keep)
 
 (setq visible-bell 1)
@@ -783,13 +784,21 @@ information."))))
 
 ** Text Modes
 *** Org Mode
+**** Org Base
 #+begin_src emacs-lisp
-(setq org-archive-file-header-format nil)
+(setq org-directory "~/org")
 
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))) ;; Add special bullets
 
-(setq org-startup-align-all-table t)
+(setq org-startup-align-all-tables t) ;; Aligns tables when a file is opened
+(setq org-startup-shrink-all-tables t) ;; Shrinks tables according to <x> tags in the column headers
 
+(setq org-clock-in-switch-to-state "IN-PROGRESS")
+(setq org-clock-out-switch-to-state "TODO")
+
+#+end_src
+**** Org Babel
+#+begin_src emacs-lisp
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((dot . t)
@@ -805,13 +814,13 @@ information."))))
 
 (setq org-plantuml-jar-path
       (expand-file-name "~/Documents/plantuml.jar"))
+#+end_src
+**** Org Agenda
+#+begin_src emacs-lisp
+(setq org-agenda-basedir "~/org/tasks")
 
-(setq org-clock-in-switch-to-state "IN-PROGRESS")
-(setq org-clock-out-switch-to-state "TODO")
-(setq org-agenda-basedir "~/git/stuff/org")
-(setq org-refile-allow-creating-parent-nodes t)
-(setq org-refile-allow-creating-parent-nodes 'confirm)
-(setq org-refile-use-outline-path 'file)
+(setq org-archive-file-header-format nil)
+
 
 (defun  org-init-agenda ()
   (interactive)
@@ -846,20 +855,6 @@ information."))))
 
 (setq org-archive-location (format "%s/archive/%s.org::" org-agenda-basedir (format-time-string "%Y-%m-%d")))
 
-(setq org-capture-templates
-      '(("b" "Backlog" entry (file+headline (lambda () (format "%s/backlog.org" org-agenda-basedir)) "Backlog")
-         "** TODO %?\n  %i\n  %a")
-        ("t" "Today" entry (file+headline (lambda () (format "%s/today.org" org-agenda-basedir)) "Tasks")
-         "** TODO %?\n SCHEDULED: %t")
-	       ("n" "Now" entry (file+headline (lambda () (format "%s/today.org" org-agenda-basedir)) "Tasks")
-         "** TODO %?\n SCHEDULED: %t" :clock-in t)
-        ("c" "Cookbook" entry (file "~/org/cookbook.org")
-         "%(org-chef-get-recipe-from-url)"
-         :empty-lines 1)
-        ("m" "Manual Cookbook" entry (file "~/org/cookbook.org")
-         "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
-	))
-
 (defun org-agenda-new-day ()
        (interactive)
        (with-current-buffer (find-file (format "%s/today.org" org-agenda-basedir))
@@ -867,10 +862,6 @@ information."))))
 	 (kill-region (mark) (point))
 	 (if (= (buffer-size) 0) (insert "#+TODO: TODO IN-PROGRESS | DONE WONTDO\n\n* Tasks\n* Thoughts\n")))
 (org-agenda))
-
-(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
-(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 
 (defun org-complex-tasks ()
   (interactive)
@@ -885,18 +876,68 @@ information."))))
     (dolist (element (cdr tasks))
       (org-insert-heading)
       (insert element))))
-
+#+end_src
+**** Org Jira
+#+begin_src emacs-lisp
 (setq org-jira-jira-status-to-org-keyword-alist
        '(("IN PROGRESS" . "INPROGRESS")
          ("TO DO" . "TODO")
          ("DONE" . "DONE")))
+#+end_src
+**** Org Refile
+#+begin_src emacs-lisp
+(setq org-blogpost-directory (directory-files (format "%s/blog/content/posts" org-directory) t))
+(setq org-investigations-directory (directory-files (format "%s/investigations" org-directory) t))
+(setq org-cheatsheet-directory (directory-files (format "%s/cheatsheet" org-directory) t))
+(setq org-notes-directory (directory-files (format "%s/notes" org-directory) t))
+(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
+(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+(setq org-refile-targets '((org-agenda-files :maxlevel . 3)
+                           (org-blogpost-directory :maxlevel . 1)
+                           (org-investigations-directory :maxlevel . 1)
+                           (org-cheatsheet-directory :maxlevel . 1)
+                           (org-notes-directory :maxlevel . 1)))
+(setq org-refile-allow-creating-parent-nodes t)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-use-outline-path 'file)
+#+end_src
+**** Org Capture
+#+begin_src emacs-lisp
+(setq org-capture-templates
+      '(("b" "Backlog" entry (file+headline (lambda () (format "%s/backlog.org" org-agenda-basedir)) "Backlog")
+         "** TODO %?\n  %i\n  %a")
+        ("t" "Today" entry (file+headline (lambda () (format "%s/today.org" org-agenda-basedir)) "Tasks")
+         "** TODO %?\n SCHEDULED: %t")
+	       ("n" "Now" entry (file+headline (lambda () (format "%s/today.org" org-agenda-basedir)) "Tasks")
+         "** TODO %?\n SCHEDULED: %t" :clock-in t)
+        ("c" "Cookbook" entry (file "~/org/cookbook.org")
+         "%(org-chef-get-recipe-from-url)"
+         :empty-lines 1)
+        ("m" "Manual Cookbook" entry (file "~/org/cookbook.org")
+         "* %^{Recipe title: }\n  :PROPERTIES:\n  :source-url:\n  :servings:\n  :prep-time:\n  :cook-time:\n  :ready-in:\n  :END:\n** Ingredients\n   %?\n** Directions\n\n")
+        ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+        "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+	    ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+        "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
+	))
 
+(setq org-roam-capture-templates '(
+        ("n" "notes" plain (function org-roam--capture-get-point)
+         "%?"
+         :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"
+         :head "#+title: ${title}\n"
+         :unnarrowed t)
+        ("i" "investigations" plain (function org-roam--capture-get-point)
+         "%?"
+         :file-name "investigations/%<%Y%m%d%H%M%S>-${slug}"
+         :head "#+title: ${title}\n"
+         :unnarrowed t)
+                                   ))
 #+end_src
 
 **** Org Roam
 #+begin_src emacs-lisp
-(setq org-roam-directory "~/roam")
-
+(setq org-roam-directory "~/org/")
 #+end_src
 
 **** Org Protocol
@@ -907,12 +948,6 @@ information."))))
   (mapcar #'(lambda (c) (if (equal c ?[) ?\( (if (equal c ?]) ?\) c))) string-to-transform))
   )
 
-(setq org-capture-templates `(
-	("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-        "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-	("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-        "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
-))
 #+end_src
 
 *** LaTex
