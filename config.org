@@ -70,7 +70,6 @@
 (require 'ein-jupyter)
 (require 'cl)
 (require 'epg-config)
-(require 'mediawiki)
 (require 'org-download)
 
 ;; Global Modes
@@ -932,7 +931,7 @@ it can be passed in POS."
         ("n" "notes" plain (function org-roam--capture-get-point)
          "%?"
          :file-name "notes/%<%Y%m%d%H%M%S>-${slug}"
-         :head "#+title: ${title}\n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
+         :head "#+title: ${title}\n#+ROAM_ALIAS:\n#+ROAM_TAGS: \n#+CREATED: %U\n#+LAST_MODIFIED: %U\n\n"
          :unnarrowed t)
         ("i" "investigations" plain (function org-roam--capture-get-point)
          "%?"
@@ -957,7 +956,7 @@ it can be passed in POS."
 (defun transform-square-brackets-to-round-ones(string-to-transform)
   "Transforms [ into ( and ] into ), other chars left unchanged."
   (concat
-  (mapcar #'(lambda (c) (if (equal c ?[) ?\( (if (equal c ?]) ?\) c))) string-to-transform))
+  (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform))
   )
 
 #+end_src
