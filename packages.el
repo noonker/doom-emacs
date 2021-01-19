@@ -94,6 +94,7 @@
 (package! rainbow-delimiters)
 (package! slime)
 (package! yaml-mode)
+(package! virtualenvwrapper)
 
 ;; Org Packages
 (package! org-bullets)

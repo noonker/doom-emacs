@@ -63,6 +63,10 @@
 ;; they are implemented.
 #+end_src
 ** Global
+*** Theme
+#+begin_src emacs-lisp
+(set-face-attribute 'region nil :background "#122231")
+#+end_src
 *** Requires
 #+begin_src emacs-lisp
 (require 'ox-twbs)
