@@ -141,6 +141,7 @@
 (package! twittering-mode)
 (package! w3m)
 (package! yara-mode)
+(package! pcre2el)
 
 ;; Emacs Lisp Packages
 (package! ov)
