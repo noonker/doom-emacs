@@ -88,6 +88,7 @@
 (menu-bar-mode -1)
 (global-prettify-symbols-mode +1)
 (setq-default flycheck-disabled-checker '(emacs-lisp-checkdoc))
+(setq dired-dwim-target t)
 #+end_src
 **** Smooth Scrolling
 #+begin_src emacs-lisp
