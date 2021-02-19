@@ -1,0 +1,6 @@
+# name : reference for sequence diagram
+# contributor : hejack0207 <hejack0207@sina.com>
+# key: sref
+# --
+ref over ${1:participant}${2:,${3:participant}}${4: : ${5:simple line text}}
+${4:$(if (string-prefix-p " :" yas-text) "" "end ref")}

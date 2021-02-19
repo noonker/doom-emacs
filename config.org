@@ -116,22 +116,8 @@
 **** OSX
 #+begin_src emacs-lisp
 (when (memq window-system '(mac ns))
-  ;; Enable copy and paste
-  (defun copy-from-osx ()
-    (shell-command-to-string "pbpaste"))
-
-  (defun paste-to-osx (text &optional push)
-    (let ((process-connection-type nil))
-      (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-	(process-send-string proc text)
-	(process-send-eof proc))))
-
-  (setq interprogram-cut-function 'paste-to-osx)
-  (setq interprogram-paste-function 'copy-from-osx)
-;;  (setenv "SHELL" "/bin/bash")
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs
-   '("PATH")))
+(exec-path-from-shell-initialize)
+(exec-path-from-shell-copy-envs '("PATH")))
 #+end_src
 **** Windows
 #+begin_src emacs-lisp
@@ -226,6 +212,9 @@
 #+end_src
 ** Custom Functions
 #+begin_src emacs-lisp
+(defun is-tramp-window ()
+  (if (file-remote-p default-directory) t nil))
+
 (defun no-fonts-pls ()
   (interactive)
   (let ((inhibit-read-only t))
@@ -538,11 +527,11 @@ Version 2020-02-14"
 	 (setq git-branch
 	       (concat
 		(with-face "git:(" 'eshell-git-prompt-robyrussell-git-face)
-		(with-face (eshell-git-prompt--readable-branch-name) 'eshell-git-prompt-robyrussell-branch-face)
+		 (with-face (eshell-git-prompt--readable-branch-name) 'eshell-git-prompt-robyrussell-branch-face)
 		(with-face ")" 'eshell-git-prompt-robyrussell-git-face)))
 	 (setq git-dirty
-	       (when (eshell-git-prompt--collect-status)
-		 (with-face "✗" 'eshell-git-prompt-robyrussell-git-dirty-face)))
+	    (when (eshell-git-prompt--collect-status)
+	        (with-face "✗" 'eshell-git-prompt-robyrussell-git-dirty-face)))
 	 (concat git-branch git-dirty)) "☮" )))
 
 (setq eshell-prompt-function
@@ -551,15 +540,19 @@ Version 2020-02-14"
          (propertize "┌─[" 'face 'org-level-4)
          (propertize (user-login-name) 'face 'org-level-1)
          (propertize "@" 'face 'org-level-4)
-         (propertize (system-name) 'face 'org-level-3)
+         (if (is-tramp-window)
+           (propertize (file-remote-p default-directory) 'face 'org-level-3))
+           (propertize (system-name) 'face 'org-level-3))
          (propertize "]──[" 'face 'org-level-4)
          (propertize (format-time-string "%H:%M" (current-time)) 'face 'org-level-2)
          (propertize "]──[" 'face 'org-level-4)
          (propertize (concat (eshell/pwd)) 'face `(:foreground "white"))
          (propertize "]──[" 'face 'org-level-4)
-         (propertize (git-prompt-eshell) 'face 'org-level-6)
-         (if pyvenv-virtual-env-name (concat (propertize "]──[" 'face 'org-level-4)
-                                             (propertize (format "venv:%s" pyvenv-virtual-env-name) 'face 'org-level-2)))
+         (if (is-tramp-window) "🌎"
+           (concat (propertize (git-prompt-eshell) 'face 'org-level-6)
+           (if pyvenv-virtual-env-name (concat (propertize "]──[" 'face 'org-level-4)
+                                             (propertize (format "venv:%s" pyvenv-virtual-env-name) 'face 'org-level-2))))
+)
          (propertize "]\n" 'face 'org-level-4)
          (propertize "└─>" 'face 'org-level-4)
          (propertize (if (= (user-uid) 0) " # " " $ ") 'face 'org-level-4)
@@ -892,7 +885,7 @@ it can be passed in POS."
    (ein . t)))
 
 (setq org-plantuml-jar-path
-      (expand-file-name "~/Documents/plantuml.jar"))
+      (expand-file-name  "/usr/local/Cellar/plantuml/1.2021.1/libexec/plantuml.jar"))
 #+end_src
 **** Org Agenda
 #+begin_src emacs-lisp

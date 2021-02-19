@@ -1,0 +1,6 @@
+# -*- mode: plantuml-mode -*-
+# name: include
+# key: in
+# --
+!include <$1>
+$0
