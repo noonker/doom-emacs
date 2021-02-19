@@ -541,7 +541,7 @@ Version 2020-02-14"
          (propertize (user-login-name) 'face 'org-level-1)
          (propertize "@" 'face 'org-level-4)
          (if (is-tramp-window)
-           (propertize (file-remote-p default-directory) 'face 'org-level-3))
+           (propertize (file-remote-p default-directory) 'face 'org-level-3)
            (propertize (system-name) 'face 'org-level-3))
          (propertize "]──[" 'face 'org-level-4)
          (propertize (format-time-string "%H:%M" (current-time)) 'face 'org-level-2)
@@ -551,8 +551,7 @@ Version 2020-02-14"
          (if (is-tramp-window) "🌎"
            (concat (propertize (git-prompt-eshell) 'face 'org-level-6)
            (if pyvenv-virtual-env-name (concat (propertize "]──[" 'face 'org-level-4)
-                                             (propertize (format "venv:%s" pyvenv-virtual-env-name) 'face 'org-level-2))))
-)
+                                             (propertize (format "venv:%s" pyvenv-virtual-env-name) 'face 'org-level-2)))))
          (propertize "]\n" 'face 'org-level-4)
          (propertize "└─>" 'face 'org-level-4)
          (propertize (if (= (user-uid) 0) " # " " $ ") 'face 'org-level-4)
