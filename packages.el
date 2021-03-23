@@ -96,6 +96,9 @@
 (package! slime)
 (package! yaml-mode)
 (package! virtualenvwrapper)
+(package! terraform-mode)
+(package! terraform-doc)
+
 
 ;; Org Packages
 (package! org-bullets)
