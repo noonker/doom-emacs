@@ -884,7 +884,7 @@ it can be passed in POS."
    (ein . t)))
 
 (setq org-plantuml-jar-path
-      (expand-file-name  "/usr/local/Cellar/plantuml/1.2021.1/libexec/plantuml.jar"))
+      (expand-file-name  "/usr/local/Cellar/plantuml/1.2021.2/libexec/plantuml.jar"))
 #+end_src
 **** Org Agenda
 #+begin_src emacs-lisp

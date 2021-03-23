@@ -79,6 +79,7 @@
 (package! dockerfile-mode)
 (package! dumb-jump)
 (package! ein)
+(package! anaconda-mode)
 (package! elpy)
 (package! flycheck)
 (package! flycheck-irony)
