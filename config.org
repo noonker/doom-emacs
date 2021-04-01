@@ -147,7 +147,7 @@
 (defalias 'epa--decode-coding-string 'decode-coding-string)
 (setq epa-file-encrypt-to "noonker@gmail.com")
 (setq projectile-current-project-on-switch 'keep)
-
+(global-subword-mode 1)
 (setq visible-bell 1)
 (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
 (add-hook 'clojure-mode-hook (lambda () (lispy-mode 1)))
@@ -678,10 +678,19 @@ Version 2020-02-14"
   (lambda (&optional beg end)
     "mark thread as spam"
     (interactive (notmuch-interactive-region))
-    (notmuch-search-tag (list "-inbox") beg end)))
+    (notmuch-search-tag (list "-inbox" "+spam") beg end)))
 
 
 (setq notmuch-search-oldest-first nil)
+
+(define-key notmuch-search-mode-map "i"
+      (lambda ()
+        "remove fomr inbox"
+        (interactive)
+        (notmuch-search-remove-tag (list "-inbox"))
+        ))
+
+
 #+end_src
 
 *** SMTP
