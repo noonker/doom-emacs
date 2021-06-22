@@ -71,7 +71,7 @@
 #+begin_src emacs-lisp
 (require 'ox-twbs)
 (require 'org-bullets)
-(require 'ein-jupyter)
+;; (require 'ein-jupyter)
 (require 'cl)
 (require 'epg-config)
 (require 'org-download)
@@ -151,6 +151,7 @@
 (setq visible-bell 1)
 (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
 (add-hook 'clojure-mode-hook (lambda () (lispy-mode 1)))
+(add-hook 'lisp-mode-hook (lambda () (lispy-mode 1)))
 (setf epa-pinentry-mode 'loopback)
 
 (setq reb-re-syntax 'string)
@@ -1209,6 +1210,10 @@ it can be passed in POS."
 
 ** Processing
 #+begin_src emacs-lisp
+(setq processing-location "/usr/local/bin/processing-java")
+(setq processing-application-dir "/Applications/Processing.app")
+(setq processing-sketchbook-dir "~/Documents/Processing")
+
 (defun processing-mode-init ()
   (make-local-variable 'ac-sources)
   (setq ac-sources '(ac-source-dictionary ac-source-yasnippet))

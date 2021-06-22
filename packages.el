@@ -98,7 +98,9 @@
 (package! virtualenvwrapper)
 (package! terraform-mode)
 (package! terraform-doc)
-
+(package! glsl-mode)
+(package! company-glsl)
+(package! processing-mode)
 
 ;; Org Packages
 (package! org-bullets)
