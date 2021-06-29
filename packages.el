@@ -67,6 +67,7 @@
 (package! rainbow-mode)
 (package! undo-tree)
 (package! yasnippet-snippets)
+(package! ace-jump-mode)
 
 ;; Code Packages
 (package! cider)
@@ -98,6 +99,7 @@
 (package! virtualenvwrapper)
 (package! terraform-mode)
 (package! terraform-doc)
+(package! edbi)
 
 
 ;; Org Packages
@@ -134,6 +136,7 @@
 (package! mingus)
 (package! nhexl-mode)
 (package! notmuch)
+(package! offlineimap)
 (package! plantuml-mode)
 (package! platformio-mode)
 (package! restclient)
@@ -146,6 +149,7 @@
 (package! w3m)
 (package! yara-mode)
 (package! pcre2el)
+
 
 ;; Emacs Lisp Packages
 (package! ov)

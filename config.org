@@ -179,7 +179,7 @@
 
 ;; Company Mode
 (setq company-dabbrev-downcase 0)
-(setq company-idle-delay 0.3)
+(setq company-idle-delay 1)
 (setq company-minimum-prefix-length 2)
 
 (defun complete-or-indent ()
@@ -602,10 +602,22 @@ Version 2020-02-14"
 ** Tramp
 #+begin_src emacs-lisp
 ;;; no vc in tramp
+(setq remote-file-name-inhibit-cache nil)
 (setq vc-ignore-dir-regexp
       (format "\\(%s\\)\\|\\(%s\\)"
 	      vc-ignore-dir-regexp
 	      tramp-file-name-regexp))
+(setq tramp-verbose 1)
+(defadvice projectile-on (around exlude-tramp activate)
+  "This should disable projectile when visiting a remote file"
+  (unless  (--any? (and it (file-remote-p it))
+                   (list
+                    (buffer-file-name)
+                    list-buffers-directory
+                    default-directory
+                    dired-directory))
+    ad-do-it))
+(setq projectile-mode-line "Projectile")
 #+end_src
 
 ** Helm
@@ -673,6 +685,22 @@ Version 2020-02-14"
 *** Email / Notmuch
 #+begin_src emacs-lisp
 (require 'notmuch)
+(require 'offlineimap)
+
+(global-set-key (kbd "C-c c g") 'notmuch)
+(global-set-key (kbd "C-c c n") (lambda ()
+                                  (interactive)
+                                  (notmuch-search "tag:inbox")))
+(define-key notmuch-search-mode-map "q" (lambda ()
+                                          (interactive)
+                                          (notmuch-search-quit)))
+(define-key notmuch-show-mode-map "q"
+  (lambda ()
+    (interactive)
+    (notmuch-kill-this-buffer)
+    (if (and (eq major-mode 'notmuch-search-mode)
+             (< (buffer-size) 1024))
+        (notmuch-search-refresh-view))))
 
 (define-key notmuch-search-mode-map "S"
   (lambda (&optional beg end)
@@ -890,10 +918,11 @@ it can be passed in POS."
    (sql . t)
    (sqlite . t)
    (gnuplot . t)
-   (ein . t)))
+   (ein . t)
+   (C . t)))
 
 (setq org-plantuml-jar-path
-      (expand-file-name  "/usr/local/Cellar/plantuml/1.2021.2/libexec/plantuml.jar"))
+      (expand-file-name  "/usr/local/Cellar/plantuml/1.2021.7/libexec/plantuml.jar"))
 #+end_src
 **** Org Agenda
 #+begin_src emacs-lisp
@@ -928,6 +957,7 @@ it can be passed in POS."
 
 (setq org-agenda-files (append (list (format "%s/backlog.org" org-agenda-basedir)
 				     (format "%s/recurring.org" org-agenda-basedir)
+                     (format "%s/meetings.org" org-agenda-basedir)
 				     (format "%s/today.org" org-agenda-basedir))
 			       (directory-files-recursively (format "%s/projects/" org-agenda-basedir) "^[0-9a-zA-Z\-_]*?\.org$")
 			       ))
@@ -972,10 +1002,11 @@ it can be passed in POS."
 (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
 (setq org-refile-targets '((org-agenda-files :maxlevel . 3)
-                           (org-blogpost-directory :maxlevel . 1)
+                           ;; (org-blogpost-directory :maxlevel . 1)
                            (org-investigations-directory :maxlevel . 1)
-                           (org-cheatsheet-directory :maxlevel . 1)
-                           (org-notes-directory :maxlevel . 1)))
+                           ;; (org-cheatsheet-directory :maxlevel . 1)
+                           ;; (org-notes-directory :maxlevel . 1)
+                           ))
 (setq org-refile-allow-creating-parent-nodes t)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-refile-use-outline-path 'file)
@@ -1430,6 +1461,8 @@ it can be passed in POS."
 (global-set-key (kbd "<f9>") 'spray-mode)
 (global-set-key (kbd "<f12>") 'helm-pass)
 (global-set-key (kbd "<f6>") 'xah-delete-current-file)
+(global-set-key (kbd "C-c C-;") '+company/complete)
+
 ;;; Modes
 (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
@@ -1454,6 +1487,10 @@ it can be passed in POS."
 (setq rfc-mode-directory (expand-file-name "~/Documents/rfc/"))
 #+end_src
 
+** Artist
+#+begin_src emacs-lisp
+(global-set-key (kbd "<f13>") 'artist-mouse-choose-operation)
+#+end_src
 ** Load Other Files
 #+begin_src emacs-lisp
 ;;(load "~/Documents/infodoc-theme.el")
