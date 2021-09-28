@@ -106,7 +106,9 @@
 (package! org-bullets)
 (package! org-chef)
 (package! org-download)
-(package! org-roam-server)
+(unpin! org-roam)
+(package! websocket)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 (package! org-web-tools)
 
 ;;; Org Babel Packages

@@ -86,6 +86,7 @@
 (winner-mode 1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(display-time-mode 1)
 (global-prettify-symbols-mode +1)
 (setq-default flycheck-disabled-checker '(emacs-lisp-checkdoc))
 (setq dired-dwim-target t)
@@ -179,7 +180,7 @@
 
 ;; Company Mode
 (setq company-dabbrev-downcase 0)
-(setq company-idle-delay 1)
+(setq company-idle-delay 0.3)
 (setq company-minimum-prefix-length 2)
 
 (defun complete-or-indent ()
@@ -687,26 +688,27 @@ Version 2020-02-14"
 (require 'notmuch)
 (require 'offlineimap)
 
-(global-set-key (kbd "C-c c g") 'notmuch)
+;; (global-set-key (kbd "C-c c g") 'notmuch)
 (global-set-key (kbd "C-c c n") (lambda ()
                                   (interactive)
                                   (notmuch-search "tag:inbox")))
-(define-key notmuch-search-mode-map "q" (lambda ()
-                                          (interactive)
-                                          (notmuch-search-quit)))
-(define-key notmuch-show-mode-map "q"
-  (lambda ()
-    (interactive)
-    (notmuch-kill-this-buffer)
-    (if (and (eq major-mode 'notmuch-search-mode)
-             (< (buffer-size) 1024))
-        (notmuch-search-refresh-view))))
 
-(define-key notmuch-search-mode-map "S"
-  (lambda (&optional beg end)
-    "mark thread as spam"
-    (interactive (notmuch-interactive-region))
-    (notmuch-search-tag (list "-inbox" "+spam") beg end)))
+;; (define-key notmuch-search-mode-map "q" (lambda ()
+;;                                           (interactive)
+;;                                           (notmuch-search-quit)))
+;; (define-key notmuch-show-mode-map "q"
+;;   (lambda ()
+;;     (interactive)
+;;     (notmuch-kill-this-buffer)
+;;     (if (and (eq major-mode 'notmuch-search-mode)
+;;              (< (buffer-size) 1024))
+;;         (notmuch-search-refresh-view))))
+
+;; (define-key notmuch-search-mode-map "S"
+;;   (lambda (&optional beg end)
+;;     "mark thread as spam"
+;;     (interactive (notmuch-interactive-region))
+;;     (notmuch-search-tag (list "-inbox" "+spam") beg end)))
 
 
 (setq notmuch-search-oldest-first nil)
@@ -1055,6 +1057,20 @@ it can be passed in POS."
 **** Org Roam
 #+begin_src emacs-lisp
 (setq org-roam-directory "~/org/")
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 #+end_src
 
 **** Org Protocol
@@ -1460,7 +1476,7 @@ it can be passed in POS."
 (global-set-key (kbd "M-S") 'slack-select-rooms)
 (global-set-key (kbd "<f9>") 'spray-mode)
 (global-set-key (kbd "<f12>") 'helm-pass)
-(global-set-key (kbd "<f6>") 'xah-delete-current-file)
+;; (global-set-key (kbd "<f6>") 'xah-delete-current-file)
 (global-set-key (kbd "C-c C-;") '+company/complete)
 
 ;;; Modes
@@ -1476,7 +1492,7 @@ it can be passed in POS."
      (define-key lispy-mode-map (kbd "C-2") 'helm-mini)
      (define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
      ;; replace a local binding
-    ;; (lispy-define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
+     ;; (lispy-define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
      ))
 
 #+end_src
