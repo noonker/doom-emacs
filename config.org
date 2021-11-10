@@ -86,6 +86,7 @@
 (winner-mode 1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(display-time-mode 1)
 (global-prettify-symbols-mode +1)
 (setq-default flycheck-disabled-checker '(emacs-lisp-checkdoc))
 (setq dired-dwim-target t)
@@ -209,6 +210,8 @@
 ;; Windmove
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
+
+(setq gnutls-verify-error nil)
 
 #+end_src
 ** Custom Functions
@@ -603,10 +606,22 @@ Version 2020-02-14"
 ** Tramp
 #+begin_src emacs-lisp
 ;;; no vc in tramp
+(setq remote-file-name-inhibit-cache nil)
 (setq vc-ignore-dir-regexp
       (format "\\(%s\\)\\|\\(%s\\)"
 	      vc-ignore-dir-regexp
 	      tramp-file-name-regexp))
+(setq tramp-verbose 1)
+(defadvice projectile-on (around exlude-tramp activate)
+  "This should disable projectile when visiting a remote file"
+  (unless  (--any? (and it (file-remote-p it))
+                   (list
+                    (buffer-file-name)
+                    list-buffers-directory
+                    default-directory
+                    dired-directory))
+    ad-do-it))
+(setq projectile-mode-line "Projectile")
 #+end_src
 
 ** Helm
@@ -615,6 +630,7 @@ Version 2020-02-14"
       '(helm-source-buffers-list
         helm-source-bookmarks
         helm-source-recentf
+        helm-source-grep-ag
         helm-source-buffer-not-found))
 #+end_src
 
@@ -674,12 +690,29 @@ Version 2020-02-14"
 *** Email / Notmuch
 #+begin_src emacs-lisp
 (require 'notmuch)
+(require 'offlineimap)
 
-(define-key notmuch-search-mode-map "S"
-  (lambda (&optional beg end)
-    "mark thread as spam"
-    (interactive (notmuch-interactive-region))
-    (notmuch-search-tag (list "-inbox" "+spam") beg end)))
+;; (global-set-key (kbd "C-c c g") 'notmuch)
+(global-set-key (kbd "C-c c n") (lambda ()
+                                  (interactive)
+                                  (notmuch-search "tag:inbox")))
+
+;; (define-key notmuch-search-mode-map "q" (lambda ()
+;;                                           (interactive)
+;;                                           (notmuch-search-quit)))
+;; (define-key notmuch-show-mode-map "q"
+;;   (lambda ()
+;;     (interactive)
+;;     (notmuch-kill-this-buffer)
+;;     (if (and (eq major-mode 'notmuch-search-mode)
+;;              (< (buffer-size) 1024))
+;;         (notmuch-search-refresh-view))))
+
+;; (define-key notmuch-search-mode-map "S"
+;;   (lambda (&optional beg end)
+;;     "mark thread as spam"
+;;     (interactive (notmuch-interactive-region))
+;;     (notmuch-search-tag (list "-inbox" "+spam") beg end)))
 
 
 (setq notmuch-search-oldest-first nil)
@@ -891,10 +924,11 @@ it can be passed in POS."
    (sql . t)
    (sqlite . t)
    (gnuplot . t)
-   (ein . t)))
+   (ein . t)
+   (C . t)))
 
 (setq org-plantuml-jar-path
-      (expand-file-name  "/usr/local/Cellar/plantuml/1.2021.2/libexec/plantuml.jar"))
+      (expand-file-name  "/usr/local/Cellar/plantuml/1.2021.7/libexec/plantuml.jar"))
 #+end_src
 **** Org Agenda
 #+begin_src emacs-lisp
@@ -929,6 +963,7 @@ it can be passed in POS."
 
 (setq org-agenda-files (append (list (format "%s/backlog.org" org-agenda-basedir)
 				     (format "%s/recurring.org" org-agenda-basedir)
+                     (format "%s/meetings.org" org-agenda-basedir)
 				     (format "%s/today.org" org-agenda-basedir))
 			       (directory-files-recursively (format "%s/projects/" org-agenda-basedir) "^[0-9a-zA-Z\-_]*?\.org$")
 			       ))
@@ -973,10 +1008,11 @@ it can be passed in POS."
 (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
 (setq org-refile-targets '((org-agenda-files :maxlevel . 3)
-                           (org-blogpost-directory :maxlevel . 1)
+                           ;; (org-blogpost-directory :maxlevel . 1)
                            (org-investigations-directory :maxlevel . 1)
-                           (org-cheatsheet-directory :maxlevel . 1)
-                           (org-notes-directory :maxlevel . 1)))
+                           ;; (org-cheatsheet-directory :maxlevel . 1)
+                           ;; (org-notes-directory :maxlevel . 1)
+                           ))
 (setq org-refile-allow-creating-parent-nodes t)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-refile-use-outline-path 'file)
@@ -1025,6 +1061,20 @@ it can be passed in POS."
 **** Org Roam
 #+begin_src emacs-lisp
 (setq org-roam-directory "~/org/")
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 #+end_src
 
 **** Org Protocol
@@ -1434,11 +1484,15 @@ it can be passed in POS."
 (global-set-key (kbd "M-S") 'slack-select-rooms)
 (global-set-key (kbd "<f9>") 'spray-mode)
 (global-set-key (kbd "<f12>") 'helm-pass)
-(global-set-key (kbd "<f6>") 'xah-delete-current-file)
+;; (global-set-key (kbd "<f6>") 'xah-delete-current-file)
+(global-set-key (kbd "C-c C-;") '+company/complete)
+
 ;;; Modes
 (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
+(setenv "SHELL" "/opt/homebrew/bin/fish")
+(setq vterm-shell "/opt/homebrew/bin/fish")
 
 (eval-after-load "lispy"
   `(progn
@@ -1448,7 +1502,7 @@ it can be passed in POS."
      (define-key lispy-mode-map (kbd "C-2") 'helm-mini)
      (define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
      ;; replace a local binding
-    ;; (lispy-define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
+     ;; (lispy-define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
      ))
 
 #+end_src
@@ -1459,6 +1513,10 @@ it can be passed in POS."
 (setq rfc-mode-directory (expand-file-name "~/Documents/rfc/"))
 #+end_src
 
+** Artist
+#+begin_src emacs-lisp
+(global-set-key (kbd "<f13>") 'artist-mouse-choose-operation)
+#+end_src
 ** Load Other Files
 #+begin_src emacs-lisp
 ;;(load "~/Documents/infodoc-theme.el")

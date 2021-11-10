@@ -67,6 +67,7 @@
 (package! rainbow-mode)
 (package! undo-tree)
 (package! yasnippet-snippets)
+(package! ace-jump-mode)
 
 ;; Code Packages
 (package! cider)
@@ -101,12 +102,16 @@
 (package! glsl-mode)
 (package! company-glsl)
 (package! processing-mode)
+(package! edbi)
+(package! chess)
 
 ;; Org Packages
 (package! org-bullets)
 (package! org-chef)
 (package! org-download)
-(package! org-roam-server)
+(unpin! org-roam)
+(package! websocket)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 (package! org-web-tools)
 
 ;;; Org Babel Packages
@@ -125,6 +130,8 @@
 (package! easy-hugo)
 (package! ejc-sql)
 (package! elfeed)
+
+(package! elfeed-web)
 (package! emms)
 (package! erc-colorize)
 (package! es-mode)
@@ -136,6 +143,7 @@
 (package! mingus)
 (package! nhexl-mode)
 (package! notmuch)
+(package! offlineimap)
 (package! plantuml-mode)
 (package! platformio-mode)
 (package! restclient)
@@ -148,6 +156,7 @@
 (package! w3m)
 (package! yara-mode)
 (package! pcre2el)
+
 
 ;; Emacs Lisp Packages
 (package! ov)
