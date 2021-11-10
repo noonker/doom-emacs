@@ -172,3 +172,4 @@
 (package! fish-completion)
 (package! fish-mode)
 (package! vterm)
+(package! chess)
