@@ -122,6 +122,7 @@
 ;;; Org eXport
 (package! ox-reveal)
 (package! ox-twbs)
+(package! ox-json)
 
 ;; Misc Modes
 (package! ag)
