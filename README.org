@@ -8,4 +8,4 @@ This repository contains my personal emacs dotfiles powered by [[https://github.
 
 - config.org - contains all of my public personal config
 - init.el - contains all configurations managed by Doom
-- packages.el - emacs package declarations managed by =striaght.el=
+- packages.el - emacs package declarations managed by =straight.el=
