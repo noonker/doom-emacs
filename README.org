@@ -1,0 +1,11 @@
+#+TITLE: Noonker's Emacs Config
+#+DATE:    January 9, 2022
+#+SINCE:   <replace with next tagged release version>
+#+STARTUP: inlineimages nofold
+
+* Description
+This repository contains my personal emacs dotfiles powered by [[https://github.com/hlissner/doom-emacs][Doom Emacs]]. Most interesting things happen in =config.org= which gets tangled automatically by Doom.
+
+- config.org - contains all of my public personal config
+- init.el - contains all configurations managed by Doom
+- packages.el - emacs package declarations managed by =striaght.el=
