@@ -103,7 +103,7 @@
 (package! company-glsl)
 (package! processing-mode)
 (package! edbi)
-(package! chess)
+
 
 ;; Org Packages
 (package! org-bullets)
@@ -131,7 +131,7 @@
 (package! easy-hugo)
 (package! ejc-sql)
 (package! elfeed)
-
+(package! chess)
 (package! elfeed-web)
 (package! emms)
 (package! erc-colorize)
@@ -157,6 +157,7 @@
 (package! w3m)
 (package! yara-mode)
 (package! pcre2el)
+(package! password-generator)
 
 
 ;; Emacs Lisp Packages
