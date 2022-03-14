@@ -103,6 +103,14 @@
 (package! company-glsl)
 (package! processing-mode)
 (package! edbi)
+(package! chess)
+(package! xcode-mode)
+(package! xcode-project)
+(package! helm-xcdoc)
+(package! uncrustify-mode)
+
+;; LSP
+(package! lsp-sourcekit)
 
 
 ;; Org Packages

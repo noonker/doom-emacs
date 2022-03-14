@@ -700,44 +700,11 @@ Version 2020-02-14"
 (add-hook 'w3m-mode-hook 'my-w3m-bindings)
 #+end_src
 
-*** Email / Notmuch
+*** Email / Mu4e
 #+begin_src emacs-lisp
-(require 'notmuch)
 (require 'offlineimap)
 
-;; (global-set-key (kbd "C-c c g") 'notmuch)
-(global-set-key (kbd "C-c c n") (lambda ()
-                                  (interactive)
-                                  (notmuch-search "tag:inbox")))
-
-;; (define-key notmuch-search-mode-map "q" (lambda ()
-;;                                           (interactive)
-;;                                           (notmuch-search-quit)))
-;; (define-key notmuch-show-mode-map "q"
-;;   (lambda ()
-;;     (interactive)
-;;     (notmuch-kill-this-buffer)
-;;     (if (and (eq major-mode 'notmuch-search-mode)
-;;              (< (buffer-size) 1024))
-;;         (notmuch-search-refresh-view))))
-
-;; (define-key notmuch-search-mode-map "S"
-;;   (lambda (&optional beg end)
-;;     "mark thread as spam"
-;;     (interactive (notmuch-interactive-region))
-;;     (notmuch-search-tag (list "-inbox" "+spam") beg end)))
-
-
-(setq notmuch-search-oldest-first nil)
-
-(define-key notmuch-search-mode-map "i"
-      (lambda ()
-        "remove fomr inbox"
-        (interactive)
-        (notmuch-search-remove-tag (list "-inbox"))
-        ))
-
-
+(setq mu4e-get-mail-command "offlineimap -o")
 #+end_src
 
 *** SMTP
@@ -1144,6 +1111,7 @@ it can be passed in POS."
 (add-hook 'c++-mode-hook 'irony-mode)
 (add-hook 'c-mode-hook 'irony-mode)
 (add-hook 'objc-mode-hook 'irony-mode)
+;; (add-hook 'prog-mode-hook 'uncrustify-mode)
 
 (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
@@ -1530,6 +1498,11 @@ it can be passed in POS."
      ;; (lispy-define-key lispy-mode-map (kbd "C-4") 'lispy-arglist-inline)
      ))
 
+#+end_src
+
+** LSP
+#+begin_src emacs-lisp
+(setq lsp-sourcekit-executable "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp")
 #+end_src
 
 ** RFC Mode
